@@ -1,0 +1,127 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { v4 as uuidv4 } from "uuid";
+
+export default function DatabaseManagementPortal() {
+  const [admissions, setAdmissions] = useState([]);
+  const [searchId, setSearchId] = useState("");
+  const [filteredStudent, setFilteredStudent] = useState(null);
+
+  const [formData, setFormData] = useState({
+    id: uuidv4(),
+    name: "",
+    email: "",
+    phone: "",
+    dob: "",
+    address: "",
+    guardianName: "",
+    guardianPhone: "",
+    course: "",
+    previousSchool: "",
+    class: "",
+    photo: null,
+    marksheet: null,
+    leavingCertificate: null
+  });
+
+  const [feesData, setFeesData] = useState({
+    studentId: "",
+    amount: "",
+    date: ""
+  });
+
+  const handleChange = (e) => {
+    const { name, type, files, value } = e.target;
+    setFormData({ ...formData, [name]: type === "file" ? files[0] : value });
+  };
+
+  const handleFeesChange = (e) => {
+    const { name, value } = e.target;
+    setFeesData({ ...feesData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setAdmissions([...admissions, { ...formData, id: uuidv4() }]);
+    setFormData({
+      id: uuidv4(),
+      name: "",
+      email: "",
+      phone: "",
+      dob: "",
+      address: "",
+      guardianName: "",
+      guardianPhone: "",
+      course: "",
+      previousSchool: "",
+      class: "",
+      photo: null,
+      marksheet: null,
+      leavingCertificate: null
+    });
+  };
+
+  const handleFeesSubmit = (e) => {
+    e.preventDefault();
+    alert("Fees submitted successfully");
+    setFeesData({ studentId: "", amount: "", date: "" });
+  };
+
+  return (
+    <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <Card>
+        <CardContent>
+          <h2 className="text-xl font-bold">Admission Form</h2>
+          <form onSubmit={handleSubmit} className="mt-4 space-y-2">
+            <Label>Unique ID</Label>
+            <Input name="id" value={formData.id} disabled />
+            <Label>Name</Label>
+            <Input name="name" value={formData.name} onChange={handleChange} required />
+            <Label>Email</Label>
+            <Input type="email" name="email" value={formData.email} onChange={handleChange} required />
+            <Label>Phone</Label>
+            <Input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
+            <Label>Date of Birth</Label>
+            <Input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
+            <Label>Address</Label>
+            <Input name="address" value={formData.address} onChange={handleChange} required />
+            <Label>Guardian Name</Label>
+            <Input name="guardianName" value={formData.guardianName} onChange={handleChange} required />
+            <Label>Guardian Phone</Label>
+            <Input type="tel" name="guardianPhone" value={formData.guardianPhone} onChange={handleChange} required />
+            <Label>Course</Label>
+            <Input name="course" value={formData.course} onChange={handleChange} required />
+            <Label>Previous School</Label>
+            <Input name="previousSchool" value={formData.previousSchool} onChange={handleChange} required />
+            <Label>Class</Label>
+            <select name="class" value={formData.class} onChange={handleChange} required className="border p-2 rounded w-full">
+              <option value="">Select Class</option>
+              {[...Array(12).keys()].map(i => (
+                <option key={i + 1} value={`${i + 1} Std`}>{`${i + 1} Std`}</option>
+              ))}
+            </select>
+            <Button type="submit" className="mt-2">Submit</Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <h2 className="text-xl font-bold">Fees Collection Form</h2>
+          <form onSubmit={handleFeesSubmit} className="mt-4 space-y-2">
+            <Label>Student ID</Label>
+            <Input name="studentId" value={feesData.studentId} onChange={handleFeesChange} required />
+            <Label>Amount</Label>
+            <Input type="number" name="amount" value={feesData.amount} onChange={handleFeesChange} required />
+            <Label>Date</Label>
+            <Input type="date" name="date" value={feesData.date} onChange={handleFeesChange} required />
+            <Button type="submit" className="mt-2">Submit</Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
